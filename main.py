@@ -36,6 +36,7 @@ def get_api_key() -> str:
 
     return api_key
 
+
 # =========================================
 # Create Gemini Client
 # =========================================
@@ -44,25 +45,27 @@ def make_client() -> genai.Client:
     """
     Creates Gemini client
     """
+
     return genai.Client(api_key=get_api_key())
+
 
 # =========================================
 # AI Coach Function
 # =========================================
 
-def get_coaching(prompt: str, style: str = "quick") -> None:
+def get_coaching(prompt: str, style: str = "quick") -> str:
     """
     Generates coaching response using different Gemini models
 
     Styles:
     quick = Fast response using Flash model
-    deep  = Detailed response using Pro model + Thinking
+    deep  = Detailed response using Flash model + Thinking
     """
 
     print(f"\n--- STARTING {style.upper()} COACHING ---")
 
     # Convert style to lowercase
-    style = style.lower()
+    style = style.lower().strip()
 
     # Select model based on style
     if style == "quick":
@@ -101,16 +104,15 @@ def get_coaching(prompt: str, style: str = "quick") -> None:
             config=config
         )
 
-        # Print response
-        print("\n--- AI COACH RESPONSE ---\n")
-
-        print(response.text)
+        # Return AI response
+        return response.text
 
     except Exception as e:
-        print(f"\n[ERROR] {e}")
+        return f"[ERROR] {e}"
 
     finally:
         print("\nProgram completed.")
+
 
 # =========================================
 # Test Calls
@@ -121,13 +123,19 @@ if __name__ == "__main__":
     print("Running AI Coach Tests...")
 
     # Quick coaching
-    get_coaching(
+    result = get_coaching(
         "What are 3 tips for public speaking?",
         style="quick"
     )
 
+    print("\n--- AI COACH RESPONSE ---\n")
+    print(result)
+
     # Deep coaching
-    get_coaching(
-        "Write a motivational speech about overcoming challenges.",
+    result = get_coaching(
+        "Write a short motivational speech about overcoming challenges.",
         style="deep"
     )
+
+    print("\n--- AI COACH RESPONSE ---\n")
+    print(result)
